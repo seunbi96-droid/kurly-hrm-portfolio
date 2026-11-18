@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>송은비 People Analytics 포트폴리오</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: 자격 요건 매트릭스(요약)를 맨 위에, 요건별 근거 사례 카드를 그 아래에. 보라 계열 단일 액센트. */
+:root {
+  --bg: #f6f4f8;
+  --surface: #ffffff;
+  --ink: #1d1624;
+  --muted: #6a6173;
+  --line: #e2dce8;
+  --accent: #5f0080;
+  --accent-soft: #efe4f5;
+  --font: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14101a; --surface: #1e1725; --ink: #efe9f3; --muted: #a99fb3;
+    --line: #35293e; --accent: #cf93e6; --accent-soft: #2e1d39;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14101a; --surface: #1e1725; --ink: #efe9f3; --muted: #a99fb3;
+  --line: #35293e; --accent: #cf93e6; --accent-soft: #2e1d39;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; font-family: var(--font); }
+button, input, select, textarea, table, svg, svg text { font-family: var(--font); }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--font); font-size: 15px; line-height: 1.65;
+  font-variant-numeric: tabular-nums;
+}
+.wrap { max-width: 960px; margin: 0 auto; padding: 32px 16px 56px; display: flex; flex-direction: column; gap: 28px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; line-height: 1.35; }
+h1 { font-size: 26px; font-weight: 700; }
+h2 { font-size: 18px; font-weight: 700; }
+h3 { font-size: 16px; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+header { display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px; border-bottom: 2px solid var(--accent); }
+.target { font-size: 13px; font-weight: 600; color: var(--accent); }
+.lede { color: var(--muted); max-width: 62ch; }
+
+section { display: flex; flex-direction: column; gap: 14px; }
+.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
+.sec-note { font-size: 13px; color: var(--muted); }
+
+.filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.filters button {
+  font: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+  padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--ink);
+}
+.filters button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+:root[data-theme="dark"] .filters button[aria-pressed="true"] { color: #14101a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .filters button[aria-pressed="true"] { color: #14101a; } }
+
+.matrix { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.row { display: grid; grid-template-columns: 64px 1fr auto; gap: 8px 16px; align-items: center; padding: 12px 16px; border-top: 1px solid var(--line); }
+.row:first-child { border-top: 0; }
+.row[hidden], .case[hidden] { display: none; }
+.cat { font-size: 12px; font-weight: 700; color: var(--accent); background: var(--accent-soft); padding: 2px 0; border-radius: 4px; text-align: center; }
+.req { font-weight: 500; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+.chip {
+  font: inherit; font-size: 12px; font-weight: 600; cursor: pointer;
+  padding: 3px 10px; border-radius: 999px; border: 1px solid var(--accent);
+  background: transparent; color: var(--accent);
+}
+.chip:hover { background: var(--accent-soft); }
+@media (max-width: 560px) {
+  .row { grid-template-columns: 56px 1fr; }
+  .chips { grid-column: 1 / -1; justify-content: flex-start; }
+}
+
+.cases { display: grid; grid-template-columns: 1fr; gap: 16px; align-items: start; }
+.case { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 16px; }
+.case.wide { grid-column: 1 / -1; }
+.case-top { display: flex; flex-direction: column; gap: 6px; }
+.no { font-size: 12px; font-weight: 700; color: var(--accent); }
+.where { font-size: 13px; color: var(--muted); }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { font-size: 12px; padding: 1px 8px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+dl { margin: 0; display: grid; grid-template-columns: 72px 1fr; gap: 8px 12px; }
+dt { font-size: 13px; font-weight: 700; color: var(--muted); }
+dd { margin: 0; }
+ul.plain { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+@media (max-width: 420px) { dl { grid-template-columns: 1fr; gap: 2px; } dd { margin-bottom: 8px; } }
+
+.bar { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; }
+.bar-label { font-size: 13px; color: var(--muted); }
+svg text { font-family: var(--font); font-size: 12px; fill: var(--ink); }
+.seg-a { fill: var(--accent); }
+.seg-b { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1; }
+.on-accent { fill: #fff; font-weight: 600; }
+:root[data-theme="dark"] .on-accent { fill: #14101a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .on-accent { fill: #14101a; } }
+
+.map { width: 100%; border-collapse: collapse; font-size: 14px; }
+.map th, .map td { text-align: left; vertical-align: top; padding: 8px 10px; border-top: 1px solid var(--line); }
+.map th { font-size: 12px; color: var(--muted); font-weight: 700; border-top: 0; }
+.scroll { overflow-x: auto; }
+
+.home {
+  position: fixed; right: 16px; bottom: 16px; z-index: 10;
+  display: inline-flex; align-items: center; gap: 6px;
+  font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+  padding: 10px 16px; border-radius: 999px;
+  background: var(--surface); color: var(--accent); border: 1px solid var(--accent);
+  box-shadow: 0 2px 10px rgba(29, 22, 36, 0.18);
+}
+.home:hover { background: var(--accent-soft); }
+.home svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+footer { font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <span class="target">컬리 HRM (People Analytics) 담당자 지원</span>
+  <h1>송은비 포트폴리오</h1>
+  <p class="lede">공고의 자격 요건마다 제가 실제로 한 일을 연결했습니다.<br>숫자를 맞추는 일과, 그 숫자 뒤에 있는 사람의 경험을 읽는 일을 함께 해 왔습니다.</p>
+</header>
+
+<section aria-labelledby="matrix-title">
+  <div class="sec-head">
+    <h2 id="matrix-title">자격 요건과 근거 사례</h2>
+  </div>
+  <div class="filters" role="group" aria-label="요건 구분">
+    <button type="button" data-filter="all" aria-pressed="true">전체</button>
+    <button type="button" data-filter="경험" aria-pressed="false">경험</button>
+    <button type="button" data-filter="지식" aria-pressed="false">지식</button>
+    <button type="button" data-filter="스킬" aria-pressed="false">스킬</button>
+  </div>
+  <div class="matrix">
+    <div class="row" data-cat="경험"><span class="cat">경험</span><span class="req">데이터 분석·시각화 프로젝트를 주도적으로 수행</span><span class="chips"><button class="chip" data-go="case-1">사례 1</button><button class="chip" data-go="case-2">사례 2</button><button class="chip" data-go="case-3">사례 3</button></span></div>
+    <div class="row" data-cat="지식"><span class="cat">지식</span><span class="req">조직 내 사람의 행동에 대한 관심</span><span class="chips"><button class="chip" data-go="case-4">사례 4</button><button class="chip" data-go="case-5">사례 5</button><button class="chip" data-go="case-6">사례 6</button><button class="chip" data-go="case-7">사례 7</button></span></div>
+    <div class="row" data-cat="지식"><span class="cat">지식</span><span class="req">기초 통계 지식과 데이터 해석 능력</span><span class="chips"><button class="chip" data-go="case-1">사례 1</button><button class="chip" data-go="case-3">사례 3</button></span></div>
+    <div class="row" data-cat="스킬"><span class="cat">스킬</span><span class="req">데이터 시각화와 대시보드 제작</span><span class="chips"><button class="chip" data-go="case-2">사례 2</button></span></div>
+    <div class="row" data-cat="스킬"><span class="cat">스킬</span><span class="req">분석 결과를 쉽게 설명하고 보고서를 작성</span><span class="chips"><button class="chip" data-go="case-3">사례 3</button><button class="chip" data-go="case-8">사례 8</button></span></div>
+    <div class="row" data-cat="스킬"><span class="cat">스킬</span><span class="req">Excel 활용</span><span class="chips"><button class="chip" data-go="case-1">사례 1</button><button class="chip" data-go="case-2">사례 2</button></span></div>
+    <div class="row" data-cat="지식"><span class="cat">지식</span><span class="req">석사 과정의 연구 경험 (구성원 경험의 질적 연구)</span><span class="chips"><button class="chip" data-go="case-4">사례 4</button></span></div>
+  </div>
+</section>
+
+<section aria-labelledby="cases-title">
+  <div class="sec-head">
+    <h2 id="cases-title">사례</h2>
+  </div>
+  <div class="cases">
+
+    <article class="case wide" id="case-1" data-cat="경험 지식 스킬">
+      <div class="case-top">
+        <span class="no">사례 1</span>
+        <h3>24개월 급여 데이터를 대조해 약 400만원 차액의 원인을 찾았습니다</h3>
+        <span class="where">서울대학교 생활과학대학 행정실 · 데이터 2024.03 ~ 2026.03</span>
+        <div class="tags"><span class="tag">데이터 분석</span><span class="tag">데이터 해석</span><span class="tag">Excel</span></div>
+      </div>
+      <dl>
+        <dt>문제</dt><dd>세금 통장 잔액에 약 400만원의 차액이 있었고, 원인이 정리된 자료가 없었습니다.</dd>
+        <dt>접근</dt><dd>월 평균 4건의 단시간 근로자 급여 데이터를 약 24개월치 모아, 공제액과 실제 납부액을 월별로 비교하는 엑셀을 직접 만들었습니다.</dd>
+        <dt>결과</dt><dd>원인을 규명해 과공제분은 환급받고, 남은 금액은 분석 자료와 함께 인수인계했습니다. 같은 일이 반복되지 않도록 관리 기준도 문서로 남겼습니다.</dd>
+      </dl>
+      <div class="bar" role="img" aria-label="차액 약 400만원 중 260만원은 환급, 140만원은 분석 자료와 함께 인수인계">
+        <span class="bar-label">차액 약 400만원의 처리 (단위: 만원)</span>
+        <svg viewBox="0 0 320 44" width="100%" aria-hidden="true">
+          <rect class="seg-a" x="10" y="6" width="195" height="32" rx="4"/>
+          <rect class="seg-b" x="207" y="6" width="103" height="32" rx="4"/>
+          <text class="on-accent" x="22" y="27">과공제 환급 260</text>
+          <text x="219" y="27">인수인계 140</text>
+        </svg>
+      </div>
+    </article>
+
+    <article class="case wide" id="case-2" data-cat="경험 스킬">
+      <div class="case-top">
+        <span class="no">사례 2</span>
+        <h3>월간 경영분석 대시보드를 엑셀로 설계하고 구축했습니다</h3>
+        <span class="where">현 직장 경영기획실 · 개인 분석용으로 시작</span>
+        <div class="tags"><span class="tag">대시보드</span><span class="tag">시각화</span><span class="tag">Excel</span></div>
+      </div>
+      <dl>
+        <dt>문제</dt><dd>월별 손익을 볼 때마다 항목별로 흩어진 자료를 다시 모아야 했고, 증감이 일회성인지 구조적인지 구분하기 어려웠습니다.</dd>
+        <dt>접근</dt><dd>손익부터 당기순이익까지의 흐름, 예측 대비 실적, 영업이익 증감 요인, 인당 생산성, 연구개발비 추적을 한 파일로 묶었습니다. 24개 시트와 약 480개 수식으로 구성했고, 수치가 서로 맞는지 확인하는 검증 시트를 따로 두었습니다.</dd>
+        <dt>현재</dt><dd>사내 보고용은 아니고 개인 분석용입니다. 손익에 대한 이해가 깊어지는 대로 보고용으로 고도화하는 것이 목표입니다.</dd>
+      </dl>
+    </article>
+
+    <article class="case" id="case-3" data-cat="경험 지식 스킬">
+      <div class="case-top">
+        <span class="no">사례 3</span>
+        <h3>판관비 예측의 오차 원인을 찾아 확인 절차를 바꿨습니다</h3>
+        <span class="where">현 직장 경영기획실 · 매주 예측 보고, 월 마감 후 분석</span>
+        <div class="tags"><span class="tag">가설과 검증</span><span class="tag">데이터 해석</span><span class="tag">보고</span></div>
+      </div>
+      <dl>
+        <dt>문제</dt><dd>월 마감 후 예측과 실적을 비교해 보니, 한 비용 항목에서 현업에 확인한 값이 자료로 추정한 값보다 실적에 더 가까웠습니다.</dd>
+        <dt>가설</dt><dd>수주현황 같은 자료로는 비용을 키울 조건이 있는지까지만 보이고, 그 조건이 실제 비용에 얼마나 반영되는지는 현업 확인으로만 알 수 있다고 보았습니다.</dd>
+        <dt>검증</dt><dd>마감 후 예측과 실적의 차이, 현업 확인 내용을 나란히 놓고 비교해 가설이 맞는지 확인했습니다.</dd>
+        <dt>개선</dt><dd>셋째 주에 수주현황으로 해당 조건이 많은 달을 먼저 가려내고, 그런 달에는 현업에 우선 확인하는 절차를 추가했습니다. 자료로 대상을 고르고 확인은 현업에 맡기는 구조입니다.</dd>
+      </dl>
+    </article>
+
+    <article class="case wide" id="case-4" data-cat="지식">
+      <div class="case-top">
+        <span class="no">사례 4</span>
+        <h3>석사 논문: 소수자 공동체의 일상 공간에서 일어나는 돌봄과 학습</h3>
+        <span class="where">서울대학교 대학원 · 참여 관찰과 심층 면접</span>
+        <div class="tags"><span class="tag">구성원 경험</span><span class="tag">질적 연구</span><span class="tag">숫자 뒤의 맥락</span></div>
+      </div>
+      <p>한 공동체의 일상 공간에 머물며 참여 관찰을 하고, 구성원을 깊이 면접해 그 공간이 구성원에게 어떤 의미인지 분석했습니다. 발견한 내용을 People Analytics에서 지표를 읽는 방식으로 옮겨 보면 다음과 같습니다.</p>
+      <div class="scroll">
+        <table class="map">
+          <thead><tr><th>연구에서 발견한 것</th><th>데이터를 읽을 때의 질문</th></tr></thead>
+          <tbody>
+            <tr><td>자신의 모습이 있는 그대로 받아들여지는 경험이 공간에 대한 애착이 됩니다.</td><td>몰입과 잔류를 설명하는 요인은 무엇인가</td></tr>
+            <tr><td>개개인의 상황을 살피는 돌봄이 관계를 만들지만, 안전을 위한 선별은 일부를 배제하기도 합니다.</td><td>이 평균과 제도에서 누가 빠져 있는가</td></tr>
+            <tr><td>구성원은 선배의 삶을 보며 오래 이어갈 방법을 배웁니다.</td><td>입사부터 성장, 이직까지 구성원의 경로는 어떻게 이어지는가</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <article class="case" id="case-5" data-cat="지식">
+      <div class="case-top">
+        <span class="no">사례 5</span>
+        <h3>탕비실에 익명 의견 게시판을 만들었습니다</h3>
+        <span class="where">서울대학교 생활과학대학 행정실</span>
+        <div class="tags"><span class="tag">구성원 경험 설계</span></div>
+      </div>
+      <dl>
+        <dt>배경</dt><dd>석사 연구에서 확인한 “세심한 돌봄이 구성원 사이 신뢰로 순환한다”는 통찰을 실무에 적용했습니다.</dd>
+        <dt>실행</dt><dd>별도 지시와 예산 없이 익명으로 간식 의견을 적는 게시판을 만들고, 반영된 의견에는 표시를 달아 의견이 쓰였다는 것을 보이게 운영했습니다.</dd>
+      </dl>
+    </article>
+
+    <article class="case" id="case-6" data-cat="지식">
+      <div class="case-top">
+        <span class="no">사례 6</span>
+        <h3>수요 조사로 신입생 온보딩 세미나를 설계했습니다</h3>
+        <span class="where">서울대학교 여성학협동과정 행정실 · 학과 전임조교</span>
+        <div class="tags"><span class="tag">온보딩</span><span class="tag">선발 운영</span></div>
+      </div>
+      <ul class="plain">
+        <li>신입생 수요 조사를 바탕으로 온보딩 세미나를 기획하고 운영했으며, 박사과정 강사를 섭외하고 조율했습니다.</li>
+        <li>입시설명회를 기획·운영하고, 지원 서류 접수와 관리, 심사 일정 조율과 장소 섭외, 평가 서류 제출까지 맡았습니다.</li>
+      </ul>
+    </article>
+
+    <article class="case" id="case-7" data-cat="지식">
+      <div class="case-top">
+        <span class="no">사례 7</span>
+        <h3>동아리 운영 방식을 위계에서 참여로 바꾸자고 제안했습니다</h3>
+        <span class="where">동아리 운영</span>
+        <div class="tags"><span class="tag">조직 구조</span><span class="tag">참여</span></div>
+      </div>
+      <p>위계적인 임원제를 구성원 모두가 의사결정에 참여하는 운영위원회 방식으로 전환하자고 제안했습니다. 창설 당시 3명이던 동아리는 최대 20명까지 커졌습니다.</p>
+    </article>
+
+    <article class="case" id="case-8" data-cat="스킬">
+      <div class="case-top">
+        <span class="no">사례 8</span>
+        <h3>정해진 주기로 보고하는 틀을 만들었습니다</h3>
+        <span class="where">현 직장 경영기획실</span>
+        <div class="tags"><span class="tag">보고서 작성</span><span class="tag">설명</span></div>
+      </div>
+      <ul class="plain">
+        <li>매주 당월 판관비 예측을 보고하고, 월 마감 후 예측 대비 실적 차이와 증감 요인을 설명합니다.</li>
+        <li>법무 진행 현황은 건별 기한(D-day)과 비용을 한눈에 보는 관리대장(4개 시트)과 주간 업데이트 루틴, 월간 보고 메일 양식으로 정리했습니다.</li>
+        <li>부문장회의 회의록을 작성합니다.</li>
+      </ul>
+    </article>
+
+  </div>
+</section>
+
+<footer>
+  현 직장에서 한 일은 금액, 사업부문, 거래 상대를 빼고 일반화해 적었습니다. 학교 행정실 사례의 수치는 당시 업무 기록을 기준으로 합니다.
+</footer>
+
+</div>
+<button type="button" class="home" id="home" aria-label="맨 위 요건 목록으로 이동">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+  홈
+</button>
+<script>
+(function () {
+  var buttons = document.querySelectorAll('.filters button');
+  var items = document.querySelectorAll('[data-cat]');
+  function apply(f) {
+    buttons.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.filter === f ? 'true' : 'false'); });
+    items.forEach(function (el) {
+      var cats = el.dataset.cat.split(' ');
+      el.hidden = !(f === 'all' || cats.indexOf(f) !== -1);
+    });
+  }
+  buttons.forEach(function (b) { b.addEventListener('click', function () { apply(b.dataset.filter); }); });
+  document.getElementById('home').addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  document.querySelectorAll('[data-go]').forEach(function (c) {
+    c.addEventListener('click', function () {
+      var t = document.getElementById(c.dataset.go);
+      if (!t) return;
+      if (t.hidden) apply('all');
+      t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+})();
+</script>
+</body>
+</html>
